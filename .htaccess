@@ -1,48 +1,13 @@
-RewriteEngine On
-RewriteBase /care_center/publico/
+# CareCenter - Configuración mínima
+# Solo reglas básicas de seguridad
 
-# Redirigir todo el tráfico a index.php excepto archivos existentes
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
-
-# Configuración de seguridad
-Header always set X-Content-Type-Options nosniff
-Header always set X-Frame-Options DENY
-Header always set X-XSS-Protection "1; mode=block"
-Header always set Referrer-Policy "strict-origin-when-cross-origin"
-Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-
-# Configuración de cache para assets estáticos
-<FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
-    ExpiresActive On
-    ExpiresDefault "access plus 1 month"
-    Header append Cache-Control "public"
-</FilesMatch>
-
-# Proteger archivos sensibles
-<Files ~ "^\.">
+# Bloquear acceso a archivos sensibles
+<Files ".env">
     Order allow,deny
     Deny from all
 </Files>
 
-<Files ~ "(\.env|\.log|composer\.json|composer\.lock|\.git)">
+<Files "*.bak">
     Order allow,deny
     Deny from all
 </Files>
-
-# Configuración de compresión
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json text/xml application/xml application/xml+rss text/plain
-</IfModule>
-
-# Configuración de tipos MIME
-AddType application/javascript .js
-AddType text/css .css
-
-# Configuración de upload de archivos
-php_value upload_max_filesize 10M
-php_value post_max_size 12M
-php_value max_execution_time 60
-php_value max_input_time 60
-php_value memory_limit 256M
