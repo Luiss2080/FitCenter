@@ -1,0 +1,574 @@
+/**
+ * Estilos para páginas de autenticación - CareCenter
+ * Diseño moderno y responsivo para login, registro y recuperación
+ */
+
+/* ====================================================================
+   VARIABLES CSS
+   ==================================================================== */
+:root {
+    /* Colores principales */
+    --primary-color: #007bff;
+    --primary-dark: #0056b3;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    
+    /* Colores de fondo */
+    --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --bg-secondary: #f8f9fa;
+    --bg-white: #ffffff;
+    --bg-dark: #343a40;
+    
+    /* Tipografía */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-sm: 0.875rem;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 600;
+    
+    /* Espaciado */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+    
+    /* Sombras */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.25);
+    
+    /* Bordes */
+    --border-radius: 0.375rem;
+    --border-radius-lg: 0.5rem;
+    --border-radius-xl: 0.75rem;
+    
+    /* Transiciones */
+    --transition-base: all 0.3s ease;
+    --transition-fast: all 0.15s ease;
+}
+
+/* ====================================================================
+   ESTILOS BASE
+   ==================================================================== */
+.auth-body {
+    font-family: var(--font-family);
+    background: var(--bg-secondary);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.auth-container {
+    min-height: 100vh;
+}
+
+/* ====================================================================
+   PANEL IZQUIERDO
+   ==================================================================== */
+.auth-left-panel {
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-left-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('/assets/img/auth-pattern.svg') center/cover;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.auth-left-content {
+    position: relative;
+    z-index: 2;
+    padding: var(--spacing-xxl);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+}
+
+.auth-brand {
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+}
+
+.auth-logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: var(--spacing-md);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.auth-brand-title {
+    font-size: 2.5rem;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-sm);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.auth-brand-subtitle {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-normal);
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.auth-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.auth-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+    backdrop-filter: blur(10px);
+    transition: var(--transition-base);
+}
+
+.auth-feature:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.auth-feature-icon {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+    font-size: 1.25rem;
+}
+
+.auth-feature-content h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-xs);
+}
+
+.auth-feature-content p {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* ====================================================================
+   PANEL DERECHO - FORMULARIO
+   ==================================================================== */
+.auth-form-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+}
+
+.auth-logo-mobile {
+    width: 60px;
+    height: 60px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.auth-title-mobile {
+    font-size: 1.75rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.auth-form-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.auth-form-title {
+    font-size: 2rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--bg-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.auth-form-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+/* ====================================================================
+   FORMULARIO
+   ==================================================================== */
+.auth-form .form-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--bg-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.auth-form .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    font-size: var(--font-size-base);
+    transition: var(--transition-base);
+}
+
+.auth-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.auth-form .input-group-text {
+    border: 2px solid #e9ecef;
+    border-right: none;
+    background: var(--bg-white);
+    color: var(--secondary-color);
+}
+
+.auth-form .input-group .form-control {
+    border-left: none;
+}
+
+.auth-form .input-group:focus-within .input-group-text {
+    border-color: var(--primary-color);
+}
+
+.toggle-password {
+    border: 2px solid #e9ecef;
+    border-left: none;
+    background: var(--bg-white);
+    color: var(--secondary-color);
+}
+
+.toggle-password:hover {
+    background: #f8f9fa;
+    color: var(--primary-color);
+}
+
+/* ====================================================================
+   BOTONES
+   ==================================================================== */
+.btn-login {
+    padding: 0.75rem 1.5rem;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--border-radius);
+    transition: var(--transition-base);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-login:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.btn-login:disabled {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ====================================================================
+   ENLACES Y ELEMENTOS ADICIONALES
+   ==================================================================== */
+.auth-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    transition: var(--transition-fast);
+}
+
+.auth-link:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.form-check-label {
+    font-size: var(--font-size-sm);
+    color: var(--secondary-color);
+}
+
+/* ====================================================================
+   PIE DE PÁGINA Y CONTACTO
+   ==================================================================== */
+.auth-footer {
+    text-align: center;
+}
+
+.auth-contact {
+    border-top: 1px solid #e9ecef !important;
+}
+
+.auth-contact-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+    text-decoration: none;
+    color: var(--secondary-color);
+    transition: var(--transition-fast);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+}
+
+.auth-contact-item:hover {
+    color: var(--primary-color);
+    background: rgba(0, 123, 255, 0.1);
+}
+
+.auth-contact-item i {
+    font-size: 1.25rem;
+}
+
+/* ====================================================================
+   ALERTAS PERSONALIZADAS
+   ==================================================================== */
+.alert {
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--success-color);
+    border-left: 4px solid var(--success-color);
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--danger-color);
+    border-left: 4px solid var(--danger-color);
+}
+
+.alert-info {
+    background: rgba(23, 162, 184, 0.1);
+    color: var(--info-color);
+    border-left: 4px solid var(--info-color);
+}
+
+/* ====================================================================
+   ANIMACIONES
+   ==================================================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.auth-form-container {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.auth-logo {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* ====================================================================
+   RESPONSIVE
+   ==================================================================== */
+
+/* Tablets */
+@media (max-width: 991.98px) {
+    .auth-left-panel {
+        display: none !important;
+    }
+    
+    .auth-form-container {
+        padding: var(--spacing-lg);
+    }
+    
+    .auth-brand-title {
+        font-size: 2rem;
+    }
+}
+
+/* Móviles */
+@media (max-width: 575.98px) {
+    .auth-form-container {
+        padding: var(--spacing-md);
+    }
+    
+    .auth-form-title {
+        font-size: 1.75rem;
+    }
+    
+    .auth-title-mobile {
+        font-size: 1.5rem;
+    }
+    
+    .auth-contact-item {
+        padding: var(--spacing-xs);
+    }
+    
+    .auth-contact-item i {
+        font-size: 1rem;
+    }
+    
+    .auth-contact-item small {
+        font-size: 0.75rem;
+    }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 375px) {
+    .auth-form-container {
+        padding: var(--spacing-sm);
+    }
+    
+    .row.text-center .col-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+/* ====================================================================
+   MODO OSCURO (Opcional)
+   ==================================================================== */
+@media (prefers-color-scheme: dark) {
+    .auth-body {
+        background: #1a1a1a;
+        color: #f8f9fa;
+    }
+    
+    .auth-form-container {
+        background: #2d3748;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .auth-form-title {
+        color: #f8f9fa;
+    }
+    
+    .auth-form .form-control {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f8f9fa;
+    }
+    
+    .auth-form .input-group-text {
+        background: #374151;
+        border-color: #4b5563;
+        color: #9ca3af;
+    }
+}
+
+/* ====================================================================
+   ESTADOS DE VALIDACIÓN
+   ==================================================================== */
+.was-validated .form-control:valid {
+    border-color: var(--success-color);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='m2.3 6.73.94-.94 2.94 2.94L8.5 6.4l.94.94-4.31 4.31z'/%3e%3c/svg%3e");
+}
+
+.was-validated .form-control:invalid {
+    border-color: var(--danger-color);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 4.6 2.4 2.4M8.2 4.6l-2.4 2.4'/%3e%3c/svg%3e");
+}
+
+/* ====================================================================
+   UTILIDADES
+   ==================================================================== */
+.loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 0.125em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.text-gradient {
+    background: var(--bg-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.glass-effect {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* ====================================================================
+   ACCESIBILIDAD
+   ==================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Mejora del foco para navegación por teclado */
+.form-control:focus,
+.btn:focus,
+.auth-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* ====================================================================
+   PRINT STYLES
+   ==================================================================== */
+@media print {
+    .auth-left-panel,
+    .auth-contact {
+        display: none !important;
+    }
+    
+    .auth-form-container {
+        box-shadow: none !important;
+        background: white !important;
+    }
+}

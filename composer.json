@@ -1,0 +1,90 @@
+{
+    "name": "carecenter",
+    "description": "Sistema de gestión nutricional y catering - CareCenter",
+    "version": "1.0.0",
+    "type": "project",
+    "keywords": ["php", "mvc", "nutricional", "catering", "salud", "delivery"],
+    "homepage": "https://carecenter.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "CareCenter Development Team",
+            "email": "desarrollo@carecenter.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "ext-gd": "*",
+        "ext-mbstring": "*",
+        "ext-fileinfo": "*",
+        "ext-openssl": "*",
+        "monolog/monolog": "^3.0",
+        "phpmailer/phpmailer": "^6.8",
+        "vlucas/phpdotenv": "^5.5",
+        "firebase/php-jwt": "^6.8",
+        "intervention/image": "^2.7",
+        "dompdf/dompdf": "^2.0",
+        "phpoffice/phpspreadsheet": "^1.29"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "mockery/mockery": "^1.6",
+        "phpstan/phpstan": "^1.10",
+        "friendsofphp/php-cs-fixer": "^3.15",
+        "fakerphp/faker": "^1.23"
+    },
+    "autoload": {
+        "psr-4": {
+            "CareCenter\\": "src/",
+            "CareCenter\\Controllers\\": "controladores/",
+            "CareCenter\\Models\\": "modelos/",
+            "CareCenter\\Utils\\": "utilidades/"
+        },
+        "files": [
+            "config/bootstrap.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CareCenter\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage",
+        "analyse": "phpstan analyse",
+        "format": "php-cs-fixer fix",
+        "serve": "php -S localhost:8000 -t publico",
+        "migrate": "php scripts/migrate.php",
+        "seed": "php scripts/seed.php",
+        "build": [
+            "@format",
+            "@analyse",
+            "@test"
+        ],
+        "setup": [
+            "composer install",
+            "@migrate",
+            "@seed"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0-dev"
+        }
+    }
+}

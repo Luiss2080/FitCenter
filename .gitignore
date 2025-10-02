@@ -1,0 +1,198 @@
+# Archivos y directorios a ignorar en Git
+
+# ==================================
+# ARCHIVOS DE CONFIGURACIÓN SENSIBLE
+# ==================================
+.env
+config/local.php
+*.local.php
+
+# ==================================
+# DEPENDENCIAS Y VENDOR
+# ==================================
+/vendor/
+node_modules/
+/publico/vendor/
+composer.lock
+
+# ==================================
+# LOGS Y ARCHIVOS TEMPORALES
+# ==================================
+/logs/*.log
+/logs/*.log.*
+/storage/temporales/*
+/storage/exportaciones/*
+!/storage/temporales/.gitkeep
+!/storage/exportaciones/.gitkeep
+
+# ==================================
+# ARCHIVOS SUBIDOS POR USUARIOS
+# ==================================
+/publico/uploads/*
+!/publico/uploads/.gitkeep
+!/publico/uploads/*/
+/publico/uploads/*/*.jpg
+/publico/uploads/*/*.jpeg
+/publico/uploads/*/*.png
+/publico/uploads/*/*.gif
+/publico/uploads/*/*.pdf
+/publico/uploads/*/*.doc
+/publico/uploads/*/*.docx
+
+# ==================================
+# BACKUPS DE BASE DE DATOS
+# ==================================
+/database/backup_*.sql
+/database/backups/
+*.sql.gz
+*.sql.bz2
+
+# ==================================
+# CACHÉ Y ARCHIVOS TEMPORALES
+# ==================================
+/cache/
+/tmp/
+*.tmp
+*.cache
+.htaccess.bak
+
+# ==================================
+# ARCHIVOS DE DESARROLLO
+# ==================================
+.phpunit.result.cache
+/coverage/
+/.phpunit.cache
+/phpstan.neon.dist
+.php_cs.cache
+.php-cs-fixer.cache
+
+# ==================================
+# ARCHIVOS DE IDEs Y EDITORES
+# ==================================
+# PhpStorm
+.idea/
+*.iml
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# NetBeans
+nbproject/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Eclipse
+.project
+.buildpath
+.settings/
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ==================================
+# ARCHIVOS DEL SISTEMA OPERATIVO
+# ==================================
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ==================================
+# ARCHIVOS DE HERRAMIENTAS
+# ==================================
+# Composer
+composer.phar
+/vendor/
+
+# NPM
+package-lock.json
+yarn.lock
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Git
+*.orig
+*.rej
+
+# ==================================
+# ARCHIVOS DE CONFIGURACIÓN LOCAL
+# ==================================
+# Configuración de Apache local
+.htaccess.local
+
+# Configuración de Nginx local
+nginx.conf.local
+
+# Configuración de PHP local
+php.ini.local
+
+# ==================================
+# ARCHIVOS DE TESTING
+# ==================================
+/tests/_output/
+/tests/_support/_generated
+
+# ==================================
+# ARCHIVOS DE MÉTRICAS Y REPORTES
+# ==================================
+/reports/
+/metrics/
+*.report
+coverage.xml
+phpunit.xml
+
+# ==================================
+# ARCHIVOS VARIOS
+# ==================================
+*.log
+*.pid
+*.seed
+*.pid.lock
+*.tgz
+*.tar.gz
+*.zip
+*.rar
+
+# Archivos de configuración de servicios
+supervisord.log
+supervisord.pid
