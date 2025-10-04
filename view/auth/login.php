@@ -1,12 +1,10 @@
 <?php
 session_start();
 
-// Procesar logout
-if (isset($_GET['logout'])) {
-    session_destroy();
-    $_SESSION = array();
-    header('Location: login.php');
-    exit;
+// Mostrar mensaje de logout exitoso
+if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
+    $_SESSION['success'] = 'Has cerrado sesión correctamente.';
+    unset($_GET['logout']);
 }
 
 // Procesar login
@@ -23,12 +21,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Conexión a base de datos
     try {
         require_once '../../config/conexion.php';
-        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ? AND activo = 1");
+        $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ? AND estado = 'activo'");
         $stmt->execute([$email]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($usuario && password_verify($password, $usuario['password'])) {
-            $_SESSION['usuario_id'] = $usuario['id'];
+            // Verificar si el email está verificado
+            if ($usuario['email_verificado'] == 0) {
+                $_SESSION['error'] = 'Debes verificar tu email antes de iniciar sesión. Revisa tu bandeja de entrada.';
+                header('Location: ' . $_SERVER['PHP_SELF']);
+                exit;
+            }
+            
+            $_SESSION['usuario_id'] = $usuario['id_usuario'];
             $_SESSION['usuario_email'] = $usuario['email'];
             $_SESSION['usuario_nombre'] = $usuario['nombre'];
             $_SESSION['usuario_rol'] = $usuario['rol'];
@@ -86,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <div class="text-center mt-2">
             <a href="registro.php" class="link">¿No tienes cuenta? Regístrate</a><br>
-            <a href="recover_password.php" class="link">¿Olvidaste tu contraseña?</a>
+            <a href="recover_password_new.php" class="link">¿Olvidaste tu contraseña?</a>
         </div>
     </div>
     

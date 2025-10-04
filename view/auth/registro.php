@@ -3,12 +3,16 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre'] ?? '');
+    $apellido = trim($_POST['apellido'] ?? '');
     $email = trim($_POST['email'] ?? '');
+    $telefono = trim($_POST['telefono'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     
-    if (empty($nombre) || empty($email) || empty($password)) {
+    if (empty($nombre) || empty($apellido) || empty($email) || empty($password)) {
         $_SESSION['error'] = 'Todos los campos son requeridos';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error'] = 'El email no tiene un formato válido';
     } elseif ($password !== $confirm_password) {
         $_SESSION['error'] = 'Las contraseñas no coinciden';
     } elseif (strlen($password) < 6) {
@@ -16,23 +20,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             require_once '../../config/conexion.php';
-            $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
+            require_once '../../utils/TokenService.php';
+            require_once '../../utils/EmailService.php';
+            
+            $stmt = $pdo->prepare("SELECT id_usuario FROM usuarios WHERE email = ?");
             $stmt->execute([$email]);
             
             if ($stmt->fetch()) {
                 $_SESSION['error'] = 'Este email ya está registrado';
             } else {
                 $password_hash = password_hash($password, PASSWORD_DEFAULT);
-                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, email, password, rol, activo, created_at) VALUES (?, ?, ?, 'cliente', 1, NOW())");
+                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, apellido, email, password, telefono, rol, estado, email_verificado) VALUES (?, ?, ?, ?, ?, 'paciente', 'activo', 0)");
                 
-                if ($stmt->execute([$nombre, $email, $password_hash])) {
-                    $_SESSION['success'] = 'Registro exitoso';
+                if ($stmt->execute([$nombre, $apellido, $email, $password_hash, $telefono])) {
+                    $usuario_id = $pdo->lastInsertId();
+                    
+                    // Crear token de verificación
+                    $tokenService = new TokenService($pdo);
+                    $token = $tokenService->crearTokenVerificacion($usuario_id, $email);
+                    
+                    if ($token) {
+                        // Enviar email de verificación
+                        $emailService = new EmailService();
+                        $emailEnviado = $emailService->enviarVerificacionEmail($email, $nombre, $token);
+                        
+                        if ($emailEnviado) {
+                            // Redirigir a página de confirmación con datos
+                            $params = http_build_query([
+                                'email' => $email,
+                                'nombre' => $nombre,
+                                'token' => $token
+                            ]);
+                            header("Location: registro_exitoso.php?{$params}");
+                            exit;
+                        } else {
+                            $_SESSION['warning'] = 'Usuario creado pero hubo un problema enviando el email de verificación.';
+                        }
+                    }
+                    
                     header('Location: login.php');
                     exit;
                 }
             }
         } catch (Exception $e) {
-            $_SESSION['error'] = 'Error del sistema';
+            $_SESSION['error'] = 'Error del sistema: ' . $e->getMessage();
         }
     }
     header('Location: ' . $_SERVER['PHP_SELF']);
@@ -57,6 +88,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
         
+        <?php if (isset($_SESSION['warning'])): ?>
+            <div class="alert alert-warning">
+                <?php echo $_SESSION['warning']; unset($_SESSION['warning']); ?>
+            </div>
+        <?php endif; ?>
+        
         <form method="POST">
             <div class="form-group">
                 <label for="nombre" class="form-label">Nombre:</label>
@@ -64,17 +101,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <div class="form-group">
+                <label for="apellido" class="form-label">Apellido:</label>
+                <input type="text" id="apellido" name="apellido" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
                 <label for="email" class="form-label">Email:</label>
                 <input type="email" id="email" name="email" class="form-control" required>
+                <small class="form-text">Te enviaremos un enlace de verificación a esta dirección</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="telefono" class="form-label">Teléfono (opcional):</label>
+                <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="+52 55 1234 5678">
             </div>
             
             <div class="form-group">
                 <label for="password" class="form-label">Contraseña:</label>
-                <input type="password" id="password" name="password" class="form-control" required>
+                <input type="password" id="password" name="password" class="form-control" required minlength="6">
+                <small class="form-text">Mínimo 6 caracteres</small>
             </div>
             
             <div class="form-group">
-                <label for="confirm_password" class="form-label">Confirmar:</label>
+                <label for="confirm_password" class="form-label">Confirmar Contraseña:</label>
                 <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
             </div>
             

@@ -17,6 +17,3 @@ CREATE TABLE usuarios (
     INDEX idx_rol (rol)
 ) ENGINE=InnoDB;
 
--- Insertar usuario administrador por defecto
-INSERT INTO usuarios (nombre, apellido, email, password, telefono, rol) VALUES
-('Admin', 'Sistema', 'admin@carecenter.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '555-0000', 'administrador');

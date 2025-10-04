@@ -3,7 +3,7 @@ session_start();
 
 // Verificar si el usuario está autenticado y es administrador
 if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_rol'] != 'administrador') {
-    header('Location: ../../public/login_funcional.php');
+    header('Location: ../auth/login.php');
     exit;
 }
 
