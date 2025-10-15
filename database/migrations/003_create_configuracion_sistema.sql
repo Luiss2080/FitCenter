@@ -17,17 +17,3 @@ CREATE TABLE configuracion_sistema (
     INDEX idx_activo (activo)
 ) ENGINE=InnoDB;
 
--- Insertar configuraciones iniciales para el sistema de email
-INSERT INTO configuracion_sistema (clave, valor, descripcion, categoria) VALUES
-('email_smtp_host', 'smtp.gmail.com', 'Servidor SMTP para envío de correos', 'email'),
-('email_smtp_port', '587', 'Puerto SMTP para envío de correos', 'email'),
-('email_smtp_secure', 'tls', 'Tipo de seguridad SMTP (tls/ssl)', 'email'),
-('email_from_address', 'noreply@fitcenter.com', 'Dirección de email remitente', 'email'),
-('email_from_name', 'FitCenter - Sistema de Gestión', 'Nombre del remitente de emails', 'email'),
-('reset_password_expiry_hours', '2', 'Horas de expiración para tokens de reset de contraseña', 'seguridad'),
-('email_verification_expiry_hours', '24', 'Horas de expiración para tokens de verificación de email', 'seguridad'),
-('sistema_nombre', 'FitCenter', 'Nombre del sistema', 'general'),
-('sistema_url_base', 'http://localhost/FitCenter', 'URL base del sistema', 'general');
-
--- Verificar inserción
-SELECT clave, valor, categoria, descripcion FROM configuracion_sistema ORDER BY categoria, clave;

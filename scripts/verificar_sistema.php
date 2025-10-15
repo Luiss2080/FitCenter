@@ -1,10 +1,10 @@
 <?php
 /**
- * Script de verificación y corrección del sistema CareCenter
+ * Script de verificación y corrección del sistema FitCenter
  */
 
-echo "🔍 VERIFICACIÓN DEL SISTEMA CARECENTER\n";
-echo "=====================================\n\n";
+echo "🔍 VERIFICACIÓN DEL SISTEMA FITCENTER\n";
+echo "====================================\n\n";
 
 // Definir rutas base
 $rootPath = dirname(__DIR__);

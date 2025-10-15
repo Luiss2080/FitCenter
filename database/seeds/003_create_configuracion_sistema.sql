@@ -1,9 +1,24 @@
 -- ============================================
--- SEED 003: Datos adicionales para configuracion_sistema - FitCenter
+-- SEED 003: Datos iniciales para configuracion_sistema - FitCenter
 -- ============================================
 
--- Configuraciones adicionales del sistema
+-- Configuraciones principales del sistema
 INSERT IGNORE INTO configuracion_sistema (clave, valor, descripcion, categoria) VALUES
+
+-- Configuraciones de email SMTP
+('email_smtp_host', 'smtp.gmail.com', 'Servidor SMTP para envío de correos', 'email'),
+('email_smtp_port', '587', 'Puerto SMTP para envío de correos', 'email'),
+('email_smtp_secure', 'tls', 'Tipo de seguridad SMTP (tls/ssl)', 'email'),
+('email_from_address', 'noreply@fitcenter.com', 'Dirección de email remitente', 'email'),
+('email_from_name', 'FitCenter - Sistema de Gestión', 'Nombre del remitente de emails', 'email'),
+
+-- Configuraciones de seguridad principales
+('reset_password_expiry_hours', '2', 'Horas de expiración para tokens de reset de contraseña', 'seguridad'),
+('email_verification_expiry_hours', '24', 'Horas de expiración para tokens de verificación de email', 'seguridad'),
+
+-- Configuraciones generales del sistema
+('sistema_nombre', 'FitCenter', 'Nombre del sistema', 'general'),
+('sistema_url_base', 'http://localhost/FitCenter', 'URL base del sistema', 'general'),
 
 -- Configuraciones de email adicionales
 ('email_templates_path', 'view/emails/', 'Ruta de las plantillas de email', 'email'),

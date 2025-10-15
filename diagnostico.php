@@ -32,8 +32,21 @@ header('Content-Type: text/html; charset=UTF-8');
     
     // Verificar conexión a la base de datos
     try {
-        include 'config/conexion.php';
-        echo '<div class="test ok"><strong>Base de Datos:</strong> ✓ Conexión exitosa</div>';
+        include 'config/config.php';
+        echo '<div class="test ok"><strong>Base de Datos:</strong> ✓ Conexión exitosa a "' . DB_NAME . '"</div>';
+        
+        // Verificar tablas principales
+        $tablas = ['usuarios', 'tokens_verificacion', 'configuracion_sistema', 'log_actividades'];
+        foreach ($tablas as $tabla) {
+            $stmt = $pdo->query("SHOW TABLES LIKE '$tabla'");
+            if ($stmt->rowCount() > 0) {
+                $count = $pdo->query("SELECT COUNT(*) FROM $tabla")->fetchColumn();
+                echo '<div class="test ok"><strong>Tabla ' . $tabla . ':</strong> ✓ Existe (' . $count . ' registros)</div>';
+            } else {
+                echo '<div class="test error"><strong>Tabla ' . $tabla . ':</strong> ✗ No existe</div>';
+            }
+        }
+        
     } catch (Exception $e) {
         echo '<div class="test error"><strong>Base de Datos:</strong> ✗ Error: ' . $e->getMessage() . '</div>';
     }
