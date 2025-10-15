@@ -1,12 +1,15 @@
 <?php
 /**
- * Clase Logger para CareCenter
- * Manejo de logs de la aplicación
+ * Clase Logger para FitCenter
+ * Manejo de logs de la aplicación y actividades de usuarios
  */
+
+require_once dirname(__DIR__) . '/config/conexion.php';
 
 class Logger {
     private static $logPath;
     private static $logFile;
+    private static $pdo;
     private static $levels = [
         'DEBUG' => 0,
         'INFO' => 1,
@@ -23,6 +26,10 @@ class Logger {
         if (!is_dir(self::$logPath)) {
             mkdir(self::$logPath, 0755, true);
         }
+        
+        // Obtener conexión PDO
+        global $pdo;
+        self::$pdo = $pdo;
     }
     
     public static function debug($mensaje, $contexto = []) {
@@ -265,6 +272,143 @@ class Logger {
             error_log("Error limpiando logs: " . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Registrar actividad de usuario en la base de datos
+     */
+    public static function registrarActividad($usuarioId, $email, $accion, $descripcion, $tipoEvento, $resultado = 'exitoso', $datosAdicionales = null) {
+        if (self::$pdo === null) {
+            self::init();
+        }
+        
+        try {
+            $stmt = self::$pdo->prepare("
+                INSERT INTO log_actividades 
+                (usuario_id, email, accion, descripcion, ip_address, user_agent, datos_adicionales, tipo_evento, resultado) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            
+            $ipAddress = self::obtenerIpCliente();
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
+            $datosJson = $datosAdicionales ? json_encode($datosAdicionales, JSON_UNESCAPED_UNICODE) : null;
+            
+            return $stmt->execute([
+                $usuarioId,
+                $email,
+                $accion,
+                $descripcion,
+                $ipAddress,
+                $userAgent,
+                $datosJson,
+                $tipoEvento,
+                $resultado
+            ]);
+            
+        } catch (PDOException $e) {
+            self::error('Error registrando actividad: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Métodos específicos para actividades del sistema FitCenter
+     */
+    
+    public static function registroUsuario($usuarioId, $email, $nombre, $rol = 'cliente') {
+        return self::registrarActividad(
+            $usuarioId,
+            $email,
+            'Registro de cuenta',
+            "Usuario registrado: $nombre (rol: $rol)",
+            'registro',
+            'exitoso',
+            ['nombre' => $nombre, 'rol' => $rol]
+        );
+    }
+
+    public static function loginExitoso($usuarioId, $email, $nombre) {
+        return self::registrarActividad(
+            $usuarioId,
+            $email,
+            'Inicio de sesión',
+            "Login exitoso: $nombre",
+            'login',
+            'exitoso',
+            ['nombre' => $nombre]
+        );
+    }
+
+    public static function loginFallido($email, $motivo = 'Credenciales incorrectas') {
+        return self::registrarActividad(
+            null,
+            $email,
+            'Intento de login fallido',
+            "Login fallido para $email: $motivo",
+            'login',
+            'fallido',
+            ['motivo' => $motivo]
+        );
+    }
+
+    public static function logoutUsuario($usuarioId, $email, $nombre) {
+        return self::registrarActividad(
+            $usuarioId,
+            $email,
+            'Cierre de sesión',
+            "Logout: $nombre",
+            'logout',
+            'exitoso',
+            ['nombre' => $nombre]
+        );
+    }
+
+    public static function solicitudResetPassword($usuarioId, $email, $nombre) {
+        return self::registrarActividad(
+            $usuarioId,
+            $email,
+            'Solicitud reset contraseña',
+            "Solicitud de reset de contraseña: $nombre",
+            'password_reset',
+            'pendiente',
+            ['nombre' => $nombre]
+        );
+    }
+
+    public static function resetPasswordExitoso($usuarioId, $email, $nombre) {
+        return self::registrarActividad(
+            $usuarioId,
+            $email,
+            'Contraseña cambiada',
+            "Reset de contraseña exitoso: $nombre",
+            'password_reset',
+            'exitoso',
+            ['nombre' => $nombre]
+        );
+    }
+
+    public static function verificacionEmail($usuarioId, $email, $nombre) {
+        return self::registrarActividad(
+            $usuarioId,
+            $email,
+            'Verificación de email',
+            "Email verificado exitosamente: $nombre",
+            'email_verification',
+            'exitoso',
+            ['nombre' => $nombre]
+        );
+    }
+
+    public static function accionAdmin($usuarioId, $email, $accion, $descripcion, $datosAdicionales = null) {
+        return self::registrarActividad(
+            $usuarioId,
+            $email,
+            $accion,
+            $descripcion,
+            'admin_action',
+            'exitoso',
+            $datosAdicionales
+        );
     }
 }
 

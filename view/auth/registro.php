@@ -22,18 +22,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require_once '../../config/conexion.php';
             require_once '../../utils/TokenService.php';
             require_once '../../utils/EmailService.php';
+            require_once '../../utils/Logger.php';
             
-            $stmt = $pdo->prepare("SELECT id_usuario FROM usuarios WHERE email = ?");
+            // Verificar si el email ya existe
+            $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
             $stmt->execute([$email]);
             
             if ($stmt->fetch()) {
                 $_SESSION['error'] = 'Este email ya está registrado';
+                Logger::loginFallido($email, 'Email ya registrado en intento de registro');
             } else {
                 $password_hash = password_hash($password, PASSWORD_DEFAULT);
-                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, apellido, email, password, telefono, rol, estado, email_verificado) VALUES (?, ?, ?, ?, ?, 'paciente', 'activo', 0)");
+                
+                // Insertar usuario con rol 'cliente' por defecto
+                $stmt = $pdo->prepare("
+                    INSERT INTO usuarios (nombre, apellido, email, password, telefono, rol, estado, email_verificado) 
+                    VALUES (?, ?, ?, ?, ?, 'cliente', 'activo', 0)
+                ");
                 
                 if ($stmt->execute([$nombre, $apellido, $email, $password_hash, $telefono])) {
                     $usuario_id = $pdo->lastInsertId();
+                    
+                    // Registrar actividad de registro
+                    Logger::registroUsuario($usuario_id, $email, $nombre . ' ' . $apellido, 'cliente');
                     
                     // Crear token de verificación
                     $tokenService = new TokenService($pdo);
@@ -42,28 +53,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($token) {
                         // Enviar email de verificación
                         $emailService = new EmailService();
-                        $emailEnviado = $emailService->enviarVerificacionEmail($email, $nombre, $token);
+                        $emailEnviado = $emailService->enviarVerificacionEmail($email, $nombre . ' ' . $apellido, $token);
                         
                         if ($emailEnviado) {
+                            Logger::info("Email de verificación enviado a: $email");
+                            
                             // Redirigir a página de confirmación con datos
                             $params = http_build_query([
                                 'email' => $email,
-                                'nombre' => $nombre,
+                                'nombre' => $nombre . ' ' . $apellido,
                                 'token' => $token
                             ]);
                             header("Location: registro_exitoso.php?{$params}");
                             exit;
                         } else {
                             $_SESSION['warning'] = 'Usuario creado pero hubo un problema enviando el email de verificación.';
+                            Logger::warning("Error enviando email de verificación a: $email");
                         }
+                    } else {
+                        $_SESSION['warning'] = 'Usuario creado pero no se pudo generar el token de verificación.';
+                        Logger::error("Error generando token de verificación para: $email");
                     }
                     
                     header('Location: login.php');
                     exit;
+                } else {
+                    $_SESSION['error'] = 'Error al crear la cuenta. Intenta nuevamente.';
+                    Logger::error("Error al insertar usuario: $email");
                 }
             }
         } catch (Exception $e) {
             $_SESSION['error'] = 'Error del sistema: ' . $e->getMessage();
+            Logger::critical('Error en registro de usuario: ' . $e->getMessage(), ['email' => $email]);
         }
     }
     header('Location: ' . $_SERVER['PHP_SELF']);
@@ -75,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - CareCenter</title>
+    <title>Registro - FitCenter</title>
     <link rel="stylesheet" href="../../public/css/app.css">
 </head>
 <body class="auth-body">

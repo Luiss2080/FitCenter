@@ -4,6 +4,7 @@
 
 CREATE TABLE tokens_verificacion (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT NOT NULL,
     email VARCHAR(150) NOT NULL,
     token VARCHAR(255) NOT NULL UNIQUE,
     tipo ENUM('verificacion_email', 'reset_password') NOT NULL,
@@ -14,9 +15,10 @@ CREATE TABLE tokens_verificacion (
     INDEX idx_token (token),
     INDEX idx_email (email),
     INDEX idx_expira (expira_en),
-    INDEX idx_tipo (tipo)
+    INDEX idx_tipo (tipo),
+    INDEX idx_usuario_id (usuario_id),
     
-    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- Crear índice compuesto para búsquedas eficientes

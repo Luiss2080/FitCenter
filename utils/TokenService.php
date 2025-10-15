@@ -1,14 +1,48 @@
 <?php
 /**
  * Clase para manejo de tokens de verificación
- * CareCenter - Sistema de gestión nutricional
+ * FitCenter - Sistema de gestión para gimnasios
  */
+
+require_once dirname(__DIR__) . '/config/conexion.php';
 
 class TokenService {
     private $pdo;
+    private $config;
     
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
+    public function __construct($pdo = null) {
+        if ($pdo === null) {
+            global $pdo;
+            $this->pdo = $pdo;
+        } else {
+            $this->pdo = $pdo;
+        }
+        $this->config = $this->getConfiguracion();
+    }
+    
+    /**
+     * Obtener configuración desde base de datos
+     */
+    private function getConfiguracion() {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT clave, valor 
+                FROM configuracion_sistema 
+                WHERE categoria = 'seguridad' AND activo = 1
+            ");
+            $stmt->execute();
+            $configuraciones = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+            
+            return [
+                'reset_expiry_hours' => (int)($configuraciones['reset_password_expiry_hours'] ?? 2),
+                'verification_expiry_hours' => (int)($configuraciones['email_verification_expiry_hours'] ?? 24)
+            ];
+        } catch (PDOException $e) {
+            return [
+                'reset_expiry_hours' => 2,
+                'verification_expiry_hours' => 24
+            ];
+        }
     }
     
     /**
@@ -23,14 +57,15 @@ class TokenService {
      */
     public function crearTokenVerificacion($idUsuario, $email) {
         $token = $this->generarToken();
-        $expira = date('Y-m-d H:i:s', strtotime('+24 hours'));
+        $expiraHoras = '+' . $this->config['verification_expiry_hours'] . ' hours';
+        $expira = date('Y-m-d H:i:s', strtotime($expiraHoras));
         
         $stmt = $this->pdo->prepare("
-            INSERT INTO tokens_verificacion (id_usuario, token, tipo, email, expira_en) 
-            VALUES (?, ?, 'verificacion_email', ?, ?)
+            INSERT INTO tokens_verificacion (usuario_id, email, token, tipo, expira_en) 
+            VALUES (?, ?, ?, 'verificacion_email', ?)
         ");
         
-        if ($stmt->execute([$idUsuario, $token, $email, $expira])) {
+        if ($stmt->execute([$idUsuario, $email, $token, $expira])) {
             return $token;
         }
         
@@ -42,14 +77,15 @@ class TokenService {
      */
     public function crearTokenRecuperacion($idUsuario, $email) {
         $token = $this->generarToken();
-        $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $expiraHoras = '+' . $this->config['reset_expiry_hours'] . ' hours';
+        $expira = date('Y-m-d H:i:s', strtotime($expiraHoras));
         
         $stmt = $this->pdo->prepare("
-            INSERT INTO tokens_verificacion (id_usuario, token, tipo, email, expira_en) 
-            VALUES (?, ?, 'reset_password', ?, ?)
+            INSERT INTO tokens_verificacion (usuario_id, email, token, tipo, expira_en) 
+            VALUES (?, ?, ?, 'reset_password', ?)
         ");
         
-        if ($stmt->execute([$idUsuario, $token, $email, $expira])) {
+        if ($stmt->execute([$idUsuario, $email, $token, $expira])) {
             return $token;
         }
         
@@ -75,7 +111,7 @@ class TokenService {
     public function marcarTokenUsado($token) {
         $stmt = $this->pdo->prepare("
             UPDATE tokens_verificacion 
-            SET usado = 1, fecha_uso = NOW() 
+            SET usado = 1 
             WHERE token = ?
         ");
         
@@ -94,7 +130,7 @@ class TokenService {
      * Verificar email de usuario
      */
     public function verificarEmailUsuario($idUsuario) {
-        $stmt = $this->pdo->prepare("UPDATE usuarios SET email_verificado = 1 WHERE id_usuario = ?");
+        $stmt = $this->pdo->prepare("UPDATE usuarios SET email_verificado = 1 WHERE id = ?");
         return $stmt->execute([$idUsuario]);
     }
     
@@ -103,7 +139,7 @@ class TokenService {
      */
     public function actualizarPassword($idUsuario, $nuevaPassword) {
         $hashPassword = password_hash($nuevaPassword, PASSWORD_DEFAULT);
-        $stmt = $this->pdo->prepare("UPDATE usuarios SET password = ? WHERE id_usuario = ?");
+        $stmt = $this->pdo->prepare("UPDATE usuarios SET password = ? WHERE id = ?");
         return $stmt->execute([$hashPassword, $idUsuario]);
     }
     

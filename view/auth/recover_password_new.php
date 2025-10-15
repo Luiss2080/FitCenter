@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require_once '../../config/conexion.php';
             require_once '../../utils/TokenService.php';
             require_once '../../utils/EmailService.php';
+            require_once '../../utils/Logger.php';
             
             $tokenService = new TokenService($pdo);
             
@@ -22,39 +23,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($usuario) {
                 if ($usuario['email_verificado'] == 0) {
                     $_SESSION['error'] = 'Debes verificar tu email antes de poder recuperar tu contraseña.';
+                    Logger::registrarActividad(
+                        $usuario['id'], 
+                        $email, 
+                        'Intento reset sin verificar', 
+                        'Intento de reset de contraseña con email no verificado', 
+                        'password_reset', 
+                        'fallido'
+                    );
                 } else {
                     // Crear token de recuperación
-                    $token = $tokenService->crearTokenRecuperacion($usuario['id_usuario'], $email);
+                    $token = $tokenService->crearTokenRecuperacion($usuario['id'], $email);
                     
                     if ($token) {
+                        // Registrar solicitud de reset
+                        Logger::solicitudResetPassword($usuario['id'], $email, $usuario['nombre'] . ' ' . $usuario['apellido']);
+                        
                         // Enviar email de recuperación
                         $emailService = new EmailService();
-                        $emailEnviado = $emailService->enviarRecuperacionPassword($email, $usuario['nombre'], $token);
+                        $emailEnviado = $emailService->enviarRecuperacionPassword($email, $usuario['nombre'] . ' ' . $usuario['apellido'], $token);
                         
                         if ($emailEnviado) {
+                            Logger::info("Email de recuperación enviado a: $email");
+                            
                             // Redirigir a página de confirmación con datos
                             $params = http_build_query([
                                 'email' => $email,
-                                'nombre' => $usuario['nombre'],
+                                'nombre' => $usuario['nombre'] . ' ' . $usuario['apellido'],
                                 'token' => $token
                             ]);
                             header("Location: recuperacion_enviada.php?{$params}");
                             exit;
                         } else {
                             $_SESSION['error'] = 'Error al enviar el email. Inténtalo más tarde.';
+                            Logger::error("Error enviando email de recuperación a: $email");
                         }
                     } else {
                         $_SESSION['error'] = 'Error al generar el token. Inténtalo más tarde.';
+                        Logger::error("Error generando token de recuperación para: $email");
                     }
                 }
             } else {
                 // Por seguridad, no revelar si el email existe o no
                 $_SESSION['success'] = 'Si el email está registrado, recibirás un enlace de recuperación.';
+                Logger::registrarActividad(
+                    null, 
+                    $email, 
+                    'Intento reset email inexistente', 
+                    'Intento de reset con email no registrado', 
+                    'password_reset', 
+                    'fallido'
+                );
             }
             
         } catch (Exception $e) {
             $_SESSION['error'] = 'Error del sistema. Inténtalo más tarde.';
-            error_log("Error en recuperación: " . $e->getMessage());
+            Logger::critical('Error en recuperación de contraseña: ' . $e->getMessage(), ['email' => $email]);
         }
     }
     
@@ -67,13 +91,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar Contraseña - CareCenter</title>
+    <title>Recuperar Contraseña - FitCenter</title>
     <link rel="stylesheet" href="../../public/css/app.css">
 </head>
 <body class="auth-body">
     <div class="auth-container">
         <div class="text-center mb-4">
-            <h1 class="auth-title">🏥 CareCenter</h1>
+            <h1 class="auth-title">💪 FitCenter</h1>
             <h2>Recuperar Contraseña</h2>
         </div>
         

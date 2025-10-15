@@ -1,14 +1,19 @@
 <?php
 /**
- * Servicio de Email Simplificado para CareCenter
- * Para desarrollo local - Simula envío de emails
+ * Servicio de Email para FitCenter
+ * Configuración dinámica desde base de datos
  */
+
+require_once dirname(__DIR__) . '/config/conexion.php';
 
 class EmailService {
     private $config;
     private $logFile;
+    private $pdo;
     
     public function __construct() {
+        global $pdo;
+        $this->pdo = $pdo;
         $this->config = $this->getEmailConfig();
         $this->logFile = dirname(__DIR__) . '/logs/emails.log';
         
@@ -20,14 +25,44 @@ class EmailService {
     }
     
     /**
-     * Configuración de email
+     * Configuración de email desde base de datos
      */
     private function getEmailConfig() {
-        return [
-            'from_email' => 'noreply@carecenter.com',
-            'from_name' => 'CareCenter Sistema',
-            'base_url' => 'http://localhost/care_center'
-        ];
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT clave, valor 
+                FROM configuracion_sistema 
+                WHERE categoria = 'email' OR categoria = 'general'
+                AND activo = 1
+            ");
+            $stmt->execute();
+            $configuraciones = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+            
+            return [
+                'smtp_host' => $configuraciones['email_smtp_host'] ?? 'smtp.gmail.com',
+                'smtp_port' => $configuraciones['email_smtp_port'] ?? '587',
+                'smtp_secure' => $configuraciones['email_smtp_secure'] ?? 'tls',
+                'from_email' => $configuraciones['email_from_address'] ?? 'noreply@fitcenter.com',
+                'from_name' => $configuraciones['email_from_name'] ?? 'FitCenter - Sistema de Gestión',
+                'base_url' => $configuraciones['sistema_url_base'] ?? 'http://localhost/FitCenter',
+                'sistema_nombre' => $configuraciones['sistema_nombre'] ?? 'FitCenter',
+                'reset_expiry_hours' => (int)($configuraciones['reset_password_expiry_hours'] ?? 2),
+                'verification_expiry_hours' => (int)($configuraciones['email_verification_expiry_hours'] ?? 24)
+            ];
+        } catch (PDOException $e) {
+            // Fallback en caso de error de BD
+            return [
+                'smtp_host' => 'smtp.gmail.com',
+                'smtp_port' => '587',
+                'smtp_secure' => 'tls',
+                'from_email' => 'noreply@fitcenter.com',
+                'from_name' => 'FitCenter - Sistema de Gestión',
+                'base_url' => 'http://localhost/FitCenter',
+                'sistema_nombre' => 'FitCenter',
+                'reset_expiry_hours' => 2,
+                'verification_expiry_hours' => 24
+            ];
+        }
     }
     
     /**
@@ -40,16 +75,17 @@ class EmailService {
             'tipo' => 'verificacion_email',
             'para' => $email,
             'nombre' => $nombre,
-            'asunto' => 'Verifica tu cuenta en CareCenter',
+            'asunto' => 'Verifica tu cuenta en ' . $this->config['sistema_nombre'],
             'enlace' => $enlaceVerificacion,
             'token' => $token,
-            'fecha' => date('Y-m-d H:i:s')
+            'fecha' => date('Y-m-d H:i:s'),
+            'expira_horas' => $this->config['verification_expiry_hours']
         ];
         
         $this->logEmail($mensaje);
         
         // En desarrollo, siempre retorna true
-        // En producción, aquí iría el código real de PHPMailer
+        // En producción, aquí iría el código real de PHPMailer/SMTP
         return true;
     }
     
@@ -63,10 +99,11 @@ class EmailService {
             'tipo' => 'reset_password',
             'para' => $email,
             'nombre' => $nombre,
-            'asunto' => 'Recuperar contraseña - CareCenter',
+            'asunto' => 'Recuperar contraseña - ' . $this->config['sistema_nombre'],
             'enlace' => $enlaceRecuperacion,
             'token' => $token,
-            'fecha' => date('Y-m-d H:i:s')
+            'fecha' => date('Y-m-d H:i:s'),
+            'expira_horas' => $this->config['reset_expiry_hours']
         ];
         
         $this->logEmail($mensaje);
@@ -93,17 +130,19 @@ class EmailService {
         if ($mensaje['tipo'] === 'verificacion_email') {
             $log .= "CONTENIDO DEL EMAIL:\n";
             $log .= "Hola " . $mensaje['nombre'] . ",\n\n";
-            $log .= "Para verificar tu cuenta en CareCenter, haz clic en:\n";
+            $log .= "Bienvenido a " . $this->config['sistema_nombre'] . "!\n\n";
+            $log .= "Para verificar tu cuenta, haz clic en:\n";
             $log .= $mensaje['enlace'] . "\n\n";
-            $log .= "Este enlace expira en 24 horas.\n\n";
-            $log .= "Saludos,\nEquipo CareCenter\n";
+            $log .= "Este enlace expira en " . $mensaje['expira_horas'] . " horas.\n\n";
+            $log .= "Saludos,\nEquipo " . $this->config['sistema_nombre'] . "\n";
         } else {
             $log .= "CONTENIDO DEL EMAIL:\n";
             $log .= "Hola " . $mensaje['nombre'] . ",\n\n";
-            $log .= "Para restablecer tu contraseña, haz clic en:\n";
+            $log .= "Para restablecer tu contraseña en " . $this->config['sistema_nombre'] . ", haz clic en:\n";
             $log .= $mensaje['enlace'] . "\n\n";
-            $log .= "Este enlace expira en 1 hora.\n\n";
-            $log .= "Saludos,\nEquipo CareCenter\n";
+            $log .= "Este enlace expira en " . $mensaje['expira_horas'] . " horas.\n\n";
+            $log .= "Si no solicitaste este cambio, puedes ignorar este email.\n\n";
+            $log .= "Saludos,\nEquipo " . $this->config['sistema_nombre'] . "\n";
         }
         
         $log .= str_repeat("=", 60) . "\n";

@@ -44,23 +44,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $tokenValido) {
         $_SESSION['error'] = 'La contraseña debe tener al menos 6 caracteres';
     } else {
         try {
+            require_once '../../utils/Logger.php';
+            
             $tokenService = new TokenService($pdo);
             
             // Actualizar contraseña
-            if ($tokenService->actualizarPassword($tokenData['id_usuario'], $password)) {
+            if ($tokenService->actualizarPassword($tokenData['usuario_id'], $password)) {
                 // Marcar token como usado
                 $tokenService->marcarTokenUsado($token);
+                
+                // Obtener datos del usuario para el log
+                $usuario = $tokenService->obtenerUsuarioPorEmail($tokenData['email']);
+                if ($usuario) {
+                    Logger::resetPasswordExitoso(
+                        $usuario['id'], 
+                        $tokenData['email'], 
+                        $usuario['nombre'] . ' ' . $usuario['apellido']
+                    );
+                }
                 
                 $_SESSION['success'] = 'Contraseña actualizada exitosamente. Ya puedes iniciar sesión.';
                 header('Location: login.php');
                 exit;
             } else {
                 $_SESSION['error'] = 'Error al actualizar la contraseña. Inténtalo de nuevo.';
+                Logger::error("Error actualizando contraseña para: " . $tokenData['email']);
             }
             
         } catch (Exception $e) {
             $_SESSION['error'] = 'Error del sistema. Inténtalo más tarde.';
-            error_log("Error actualizando password: " . $e->getMessage());
+            Logger::critical('Error en reset de contraseña: ' . $e->getMessage(), ['email' => $tokenData['email'] ?? 'unknown']);
         }
     }
 }
@@ -70,13 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $tokenValido) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restablecer Contraseña - CareCenter</title>
+    <title>Restablecer Contraseña - FitCenter</title>
     <link rel="stylesheet" href="../../public/css/app.css">
 </head>
 <body class="auth-body">
     <div class="auth-container">
         <div class="text-center mb-4">
-            <h1 class="auth-title">🏥 CareCenter</h1>
+            <h1 class="auth-title">💪 FitCenter</h1>
             <h2>Restablecer Contraseña</h2>
         </div>
         
