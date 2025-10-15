@@ -3,6 +3,7 @@
 ## ✅ Estado de las Conexiones
 
 ### 🗄️ Base de Datos
+
 - **Estado**: ✅ Conectado exitosamente
 - **Base de datos**: `fitcenter`
 - **Servidor**: `localhost`
@@ -10,12 +11,14 @@
 - **Charset**: `utf8mb4`
 
 ### 📊 Tablas Verificadas
+
 - ✅ `usuarios` (5 registros)
 - ✅ `tokens_verificacion` (4 registros)
-- ✅ `configuracion_sistema` (23 registros)  
+- ✅ `configuracion_sistema` (23 registros)
 - ✅ `log_actividades` (12 registros)
 
 ### 👥 Usuarios de Prueba
+
 - ✅ **Admin**: admin@fitcenter.com (Admin)
 - ✅ **Vendedor**: vendedor@fitcenter.com (Juan)
 - ✅ **Vendedor**: carlos@fitcenter.com (Carlos)
@@ -25,12 +28,14 @@
 ## 🔧 Archivos de Configuración
 
 ### `config/conexion.php`
+
 - Configuración de conexión PDO
 - Manejo de errores y logging
 - Función para nuevas conexiones
 - Configuración de zona horaria MySQL
 
 ### `config/config.php`
+
 - Constantes de aplicación
 - Configuración de sesiones
 - Configuración de email
@@ -40,7 +45,9 @@
 ## 📦 Modelos Disponibles
 
 ### `models/BaseModel.php`
+
 Clase base con funcionalidades comunes:
+
 - `find($id)` - Buscar por ID
 - `findAll()` - Buscar todos
 - `findWhere()` - Buscar con condiciones
@@ -51,7 +58,9 @@ Clase base con funcionalidades comunes:
 - Manejo de transacciones
 
 ### `models/Usuario.php`
+
 Modelo específico para usuarios:
+
 - `findByEmail($email)` - Buscar por email
 - `emailExists($email)` - Verificar email
 - `createUser($data)` - Crear usuario con hash
@@ -61,7 +70,9 @@ Modelo específico para usuarios:
 - `getStats()` - Estadísticas de usuarios
 
 ### `models/LogActividad.php`
+
 Modelo para log de actividades:
+
 - `registrar()` - Registrar nueva actividad
 - `getByUser()` - Actividades por usuario
 - `getByTipo()` - Actividades por tipo
@@ -70,7 +81,9 @@ Modelo para log de actividades:
 - `getStats()` - Estadísticas de actividades
 
 ### `models/TokenVerificacion.php`
+
 Modelo para tokens de verificación:
+
 - `generarToken()` - Generar nuevo token
 - `verificarToken()` - Verificar validez
 - `marcarUsado()` - Marcar como usado
@@ -81,17 +94,20 @@ Modelo para tokens de verificación:
 ## 🧪 Scripts de Prueba
 
 ### `scripts/test_database.php`
+
 - Verificación de conexión a BD
 - Verificación de tablas y registros
 - Verificación de usuarios de prueba
 - Verificación de configuración del sistema
 
 ### `scripts/test_models.php`
+
 - Prueba de funcionalidad de modelos
 - Prueba de creación de registros
 - Verificación de estadísticas
 
 ### `diagnostico.php`
+
 - Diagnóstico web completo del sistema
 - Verificación de archivos y permisos
 - Enlaces de prueba
@@ -106,6 +122,7 @@ Modelo para tokens de verificación:
 ## ⚙️ Configuración del Sistema
 
 La tabla `configuracion_sistema` contiene 23 configuraciones incluyendo:
+
 - Configuración de email (SMTP)
 - Configuración de seguridad
 - Configuración de notificaciones
