@@ -1,5 +1,5 @@
 <?php
-// Diagnóstico del Sistema CareCenter
+// Diagnóstico del Sistema FitCenter
 header('Content-Type: text/html; charset=UTF-8');
 ?>
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ header('Content-Type: text/html; charset=UTF-8');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnóstico del Sistema</title>
+    <title>Diagnóstico del Sistema FitCenter</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -25,7 +25,7 @@ header('Content-Type: text/html; charset=UTF-8');
     </style>
 </head>
 <body>
-    <h1>Diagnóstico del Sistema CareCenter</h1>
+    <h1>💪 Diagnóstico del Sistema FitCenter</h1>
     
     <?php
     echo '<div class="test info"><strong>PHP Version:</strong> ' . phpversion() . '</div>';

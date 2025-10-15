@@ -1,15 +1,16 @@
 {
-    "name": "carecenter",
-    "description": "Sistema de gestión nutricional y catering - CareCenter",
+    "name": "fitcenter/gym-management",
+    "description": "Sistema de gestión integral para gimnasios - FitCenter",
     "version": "1.0.0",
     "type": "project",
-    "keywords": ["php", "mvc", "nutricional", "catering", "salud", "delivery"],
-    "homepage": "https://carecenter.com",
+    "keywords": ["php", "mvc", "gimnasio", "fitness", "membresias", "clases", "inventario", "punto-de-venta"],
+    "homepage": "https://github.com/Luiss2080/care_center",
     "license": "MIT",
     "authors": [
         {
-            "name": "CareCenter Development Team",
-            "email": "desarrollo@carecenter.com"
+            "name": "Luis Montes",
+            "email": "luiss2080@gmail.com",
+            "homepage": "https://github.com/Luiss2080"
         }
     ],
     "require": {
@@ -39,10 +40,10 @@
     },
     "autoload": {
         "psr-4": {
-            "CareCenter\\": "src/",
-            "CareCenter\\Controllers\\": "controladores/",
-            "CareCenter\\Models\\": "modelos/",
-            "CareCenter\\Utils\\": "utilidades/"
+            "FitCenter\\": "src/",
+            "FitCenter\\Controllers\\": "controller/",
+            "FitCenter\\Models\\": "models/",
+            "FitCenter\\Utils\\": "utils/"
         },
         "files": [
             "config/bootstrap.php"

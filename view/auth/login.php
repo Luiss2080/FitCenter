@@ -33,15 +33,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             
-            $_SESSION['usuario_id'] = $usuario['id_usuario'];
+            // Actualizar fecha de último login
+            $updateStmt = $pdo->prepare("UPDATE usuarios SET fecha_ultimo_login = NOW() WHERE id = ?");
+            $updateStmt->execute([$usuario['id']]);
+            
+            $_SESSION['usuario_id'] = $usuario['id'];
             $_SESSION['usuario_email'] = $usuario['email'];
             $_SESSION['usuario_nombre'] = $usuario['nombre'];
+            $_SESSION['usuario_apellido'] = $usuario['apellido'];
             $_SESSION['usuario_rol'] = $usuario['rol'];
             
-            if ($usuario['rol'] === 'administrador') {
-                header('Location: ../admin/dashboard.php');
-            } else {
-                header('Location: ../home/welcome.php');
+            // Redireccionar según el rol del usuario
+            switch ($usuario['rol']) {
+                case 'admin':
+                    header('Location: ../admin/dashboard.php');
+                    break;
+                case 'vendedor':
+                    header('Location: ../seller/dashboard.php');
+                    break;
+                case 'cliente':
+                    header('Location: ../client/dashboard.php');
+                    break;
+                default:
+                    header('Location: ../home/welcome.php');
+                    break;
             }
             exit;
         } else {
@@ -60,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - CareCenter</title>
+    <title>Iniciar Sesión - FitCenter</title>
     <link rel="stylesheet" href="../../public/css/app.css">
 </head>
 <body class="auth-body">

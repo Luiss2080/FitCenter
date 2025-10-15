@@ -1,30 +1,227 @@
 <?php
 session_start();
 
-// Verificar si el usuario está autenticado y es administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_rol'] != 'administrador') {
+// Verificar si el usuario está autenticado y es admin
+if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_rol'] != 'admin') {
     header('Location: ../auth/login.php');
     exit;
 }
 
-$usuario_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
+$usuario_nombre = $_SESSION['usuario_nombre'] ?? 'Admin';
+$usuario_apellido = $_SESSION['usuario_apellido'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Administrador - CareCenter</title>
+    <title>Panel de Administración - FitCenter</title>
     <link rel="stylesheet" href="../../public/css/app.css">
+    <style>
+        .dashboard-body {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .welcome-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .module-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .module-card:hover {
+            transform: translateY(-5px);
+        }
+        .module-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .module-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .module-description {
+            color: #666;
+            line-height: 1.5;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #ff6b6b;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #ff5252;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body class="dashboard-body">
     <nav class="navbar">
-        <h1 class="navbar-brand">🏥 CareCenter Admin</h1>
+        <h1 class="navbar-brand">💪 FitCenter - Administración</h1>
         <div class="user-info">
-            <span>Bienvenido, <?php echo htmlspecialchars($usuario_nombre); ?></span>
-            <a href="../../view/auth/login.php?logout=1" class="btn btn-secondary">Cerrar Sesión</a>
+            <span>Bienvenido, <?php echo htmlspecialchars($usuario_nombre . ' ' . $usuario_apellido); ?></span>
+            <a href="../auth/logout.php" class="btn btn-secondary">Cerrar Sesión</a>
         </div>
     </nav>
+
+    <div class="container">
+        <div class="welcome-card">
+            <h2>🔴 Panel de Administración</h2>
+            <p>Controla todos los aspectos de tu gimnasio desde aquí. Gestiona usuarios, supervisa operaciones y analiza el rendimiento del negocio.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Usuarios Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Administradores</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Vendedores</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Clientes</div>
+            </div>
+        </div>
+
+        <div class="modules-grid">
+            <div class="module-card">
+                <div class="module-icon">👥</div>
+                <div class="module-title">Gestión de Usuarios</div>
+                <div class="module-description">
+                    Administra cuentas de usuarios, permisos y roles del sistema.
+                </div>
+                <button class="btn" onclick="alert('Módulo en desarrollo')">Gestionar</button>
+            </div>
+
+            <div class="module-card">
+                <div class="module-icon">🏋️</div>
+                <div class="module-title">Gestión de Miembros</div>
+                <div class="module-description">
+                    Control de membresías, planes y renovaciones de clientes.
+                </div>
+                <button class="btn" onclick="alert('Módulo en desarrollo')">Ver Miembros</button>
+            </div>
+
+            <div class="module-card">
+                <div class="module-icon">🛒</div>
+                <div class="module-title">Punto de Venta</div>
+                <div class="module-description">
+                    Configura productos, precios e inventario del gimnasio.
+                </div>
+                <button class="btn" onclick="alert('Módulo en desarrollo')">Configurar</button>
+            </div>
+
+            <div class="module-card">
+                <div class="module-icon">📅</div>
+                <div class="module-title">Clases y Horarios</div>
+                <div class="module-description">
+                    Programa clases grupales, disciplinas e instructores.
+                </div>
+                <button class="btn" onclick="alert('Módulo en desarrollo')">Programar</button>
+            </div>
+
+            <div class="module-card">
+                <div class="module-icon">📊</div>
+                <div class="module-title">Reportes y Analytics</div>
+                <div class="module-description">
+                    Analiza ingresos, asistencia y rendimiento del gimnasio.
+                </div>
+                <button class="btn" onclick="alert('Módulo en desarrollo')">Ver Reportes</button>
+            </div>
+
+            <div class="module-card">
+                <div class="module-icon">⚙️</div>
+                <div class="module-title">Configuración</div>
+                <div class="module-description">
+                    Ajustes generales del sistema y parámetros del gimnasio.
+                </div>
+                <button class="btn" onclick="alert('Módulo en desarrollo')">Configurar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../public/js/app.js"></script>
+</body>
+</html>
         
         .logout-btn {
             background: rgba(255,255,255,0.2);

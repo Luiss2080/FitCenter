@@ -1,22 +1,20 @@
 -- ============================================
--- MIGRACIÓN 023: Crear tabla tokens_verificacion
+-- MIGRACIÓN 002: Crear tabla tokens_verificacion - FitCenter
 -- ============================================
 
 CREATE TABLE tokens_verificacion (
-    id_token INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT NOT NULL,
-    token VARCHAR(64) NOT NULL UNIQUE,
-    tipo ENUM('verificacion_email', 'reset_password') NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(150) NOT NULL,
-    expira_en DATETIME NOT NULL,
-    usado TINYINT(1) DEFAULT 0,
-    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    fecha_uso DATETIME NULL,
+    token VARCHAR(255) NOT NULL UNIQUE,
+    tipo ENUM('verificacion_email', 'reset_password') NOT NULL,
+    usado BOOLEAN DEFAULT FALSE,
+    expira_en TIMESTAMP NOT NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     INDEX idx_token (token),
-    INDEX idx_usuario (id_usuario),
+    INDEX idx_email (email),
     INDEX idx_expira (expira_en),
-    INDEX idx_tipo (tipo),
+    INDEX idx_tipo (tipo)
     
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 ) ENGINE=InnoDB;

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CareCenter - Sistema de Gestión Nutricional</title>
+    <title>FitCenter - Sistema de Gestión para Gimnasios</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
             min-height: 100vh;
         }
         .container {
@@ -56,7 +56,7 @@
             font-size: 16px;
         }
         .btn-primary {
-            background: #667eea;
+            background: #ff6b6b;
             color: white;
         }
         .btn-secondary {
@@ -81,8 +81,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">🏥 CareCenter</div>
-            <div class="subtitle">Sistema Integral de Gestión Nutricional y Cuidado de Pacientes</div>
+            <div class="logo">💪 FitCenter</div>
+            <div class="subtitle">Sistema Integral de Gestión para Gimnasios</div>
         </div>
 
         <!-- Botones de Acceso -->
@@ -98,9 +98,9 @@
             <div style="background: #e7f3ff; padding: 20px; border-radius: 10px; margin-top: 20px;">
                 <h4 style="color: #0066cc; margin-bottom: 10px; text-align: center;">📝 Credenciales de Prueba</h4>
                 <div style="text-align: center;">
-                    <p><strong>Administrador:</strong> admin@carecenter.com / password123</p>
-                    <p><strong>Cliente:</strong> cliente@carecenter.com / password123</p>
-                    <p><strong>Nutricionista:</strong> nutricionista@carecenter.com / password123</p>
+                    <p><strong>Administrador:</strong> admin@fitcenter.com / password123</p>
+                    <p><strong>Vendedor:</strong> vendedor@fitcenter.com / password123</p>
+                    <p><strong>Cliente:</strong> cliente@fitcenter.com / password123</p>
                 </div>
                 <div style="text-align: center; margin-top: 15px;">
                     <small style="color: #666;">✅ Todos los usuarios demo tienen el email verificado</small>
@@ -108,20 +108,31 @@
             </div>
         </div>
 
-        <!-- Estado Actual -->
+        <!-- Módulos del Sistema -->
         <div class="card">
-            <h2 style="margin-bottom: 20px; color: #333; text-align: center;">⚡ Sistema Implementado</h2>
-            <div style="text-align: center; line-height: 1.6;">
-                <p>✅ <strong>Login con verificación de email</strong> - Sistema de autenticación completo</p>
-                <p>📧 <strong>TokenService para verificación</strong> - Tokens seguros con expiración</p>
-                <p>🔐 <strong>Recuperación de contraseña</strong> - Reset por email con tokens</p>
-                <p>🏗️ <strong>Base de datos completa</strong> - 22 migraciones ejecutadas</p>
-                <p>👥 <strong>Usuarios multi-rol</strong> - Admin, Nutricionista, Cliente</p>
+            <h2 style="margin-bottom: 20px; color: #333; text-align: center;">🏋️ Módulos FitCenter</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #ff6b6b;">👥 Gestión de Miembros</h4>
+                    <p>Registro, renovaciones, check-in y control de membresías</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #ff6b6b;">🛒 Ventas de Productos</h4>
+                    <p>Suplementos, ropa deportiva y accesorios</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #ff6b6b;">📅 Clases Grupales</h4>
+                    <p>CrossFit, Yoga, Spinning y reservas online</p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <h4 style="color: #ff6b6b;">📊 Reportes y Dashboard</h4>
+                    <p>Métricas de ingresos, asistencia e inventario</p>
+                </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>&copy; 2025 CareCenter - Sistema de Gestión Nutricional</p>
+            <p>&copy; 2025 FitCenter - Sistema de Gestión para Gimnasios</p>
             <p>Desarrollado con PHP 8.1 + MySQL ❤️</p>
         </div>
     </div>

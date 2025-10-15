@@ -1,11 +1,11 @@
 <?php
 /**
- * Conexión simple a la base de datos CareCenter
+ * Conexión a la base de datos FitCenter
  */
 
 // Configuración de la base de datos
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'care_center');
+define('DB_NAME', 'fitcenter_gym');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 

@@ -1,11 +1,12 @@
 <?php
 /**
- * Constantes básicas para CareCenter
+ * Constantes básicas para FitCenter
  */
 
 // Configuración básica de la aplicación
-define('APP_NAME', 'CareCenter');
+define('APP_NAME', 'FitCenter');
 define('APP_VERSION', '1.0.0');
+define('APP_DESCRIPTION', 'Sistema de gestión integral para gimnasios');
 
 // Zonas horarias
 date_default_timezone_set('America/Mexico_City');
