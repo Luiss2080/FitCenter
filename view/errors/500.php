@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error 500 - Error interno del servidor</title>
-    <link href="<?php echo ASSETS_URL; ?>/css/app.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../../public/img/LogoFitCenter.png">
+    <link href="../../public/css/app.css" rel="stylesheet">
     <style>
         .error-container {
             display: flex;

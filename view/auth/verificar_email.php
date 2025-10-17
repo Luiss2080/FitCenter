@@ -51,7 +51,8 @@ if (isset($_GET['token'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificar Email - CareCenter</title>
+    <title>Verificar Email - FitCenter</title>
+    <link rel="icon" type="image/png" href="../../public/img/LogoFitCenter.png">
     <link rel="stylesheet" href="../../public/css/app.css">
     <style>
         .verification-container {

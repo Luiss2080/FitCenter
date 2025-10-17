@@ -16,6 +16,7 @@ $usuario_apellido = $_SESSION['usuario_apellido'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - FitCenter</title>
+    <link rel="icon" type="image/png" href="../../public/img/LogoFitCenter.png">
     <link rel="stylesheet" href="../../public/css/app.css">
     <style>
         .dashboard-body {
